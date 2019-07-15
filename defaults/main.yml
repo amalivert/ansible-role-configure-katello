@@ -7,6 +7,7 @@
 # install nailgun package
 configure_katello_nailgun_package: "git+https://github.com/SatelliteQE/nailgun.git@master#egg=nailgun"
 configure_katello_nailgun_install: true
+pip_repo_epel: false
 
 # Satellite server credentials
 satellite_admin_user: admin

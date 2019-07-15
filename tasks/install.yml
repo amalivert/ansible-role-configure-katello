@@ -10,12 +10,36 @@
     proxy_username: "{{ configure_katello_proxy_username | default(omit) }}"
     proxy_password: "{{ configure_katello_proxy_password | default(omit) }}"
     gpgkey: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-$releasever
+  when: pip_repo_epel
 
 - name: Install pip
   package:
     name: python-pip
     enablerepo: epel
     state: present
+  when: pip_repo_epel
+
+- name: install python-pip
+  yum:
+    name: python-pip
+    enablerepo: "rhel-server-rhscl-{{ ansible_distribution_major_version }}-rpms"
+    state: present
+  when: not pip_repo_epel
+
+- name: Enable python scl_source
+  shell: >
+    source scl_source enable {{ var_py_version }}
+  when: not pip_repo_epel
+
+- name: Export {{ var_py_version }} environment
+  shell: >
+    export LD_LIBRARY_PATH=/opt/rh/{{ var_py_version }}/root/usr/lib64
+  when: not pip_repo_epel
+
+- name: Export {{ var_py_version }} environment
+  shell: >
+    export LD_LIBRARY_PATH=/opt/rh/{{ var_py_version }}/root/usr/lib64
+  when: not pip_repo_epel
 
 - name: Build extra arguments when configure_katello_proxy is defined
   set_fact:
